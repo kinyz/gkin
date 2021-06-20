@@ -1,0 +1,41 @@
+
+syntax = "proto3";
+
+package pb;
+option go_package = "./;pb";
+
+
+service MessageStream{
+//  rpc StreamChannel(stream Message)returns(stream Message);
+//  rpc SendChannel(stream Message)returns(Resp);
+  rpc AsyncSend(stream Message)returns(RespSend);
+  rpc SyncSend(Message)returns(RespSend);
+  rpc RequestConnect(Connect)returns(Connect);
+}
+
+message MessageList{
+  map<uint64,Message>List=1;
+}
+message Message {
+  string Topic = 1;
+  map<string,string>Headers=2;
+  string Key =3;
+  bytes  Value=4;
+  int64  TimesTamp=5; //时间戳
+  bool IsConsume=6; //是否消费
+  bool IsWrite=7; //是否写入硬盘
+  string Producer=8; //生产者
+  int64 Sequence=9; //序列号
+}
+
+message RespSend{
+  int64 Sequence=1; //序列号
+  bool  IsConsume=2;//是否消费
+}
+
+message Connect{
+  string  ClientId =1;
+  bool Oauth=2;
+  string Token=3;
+  string Key=4;
+}
