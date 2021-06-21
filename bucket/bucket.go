@@ -3,6 +3,7 @@ package bucket
 import (
 	"context"
 	"fmt"
+	"gkin/connect"
 	"gkin/message"
 	"gkin/storage"
 	"gkin/utils"
@@ -13,32 +14,31 @@ import (
 	"time"
 )
 
-func NewBucket(sto storage.Storage)*Bucket{
+func NewBucket(sto storage.Storage) *Bucket {
 	return &Bucket{
-	sto: sto,
-	producers: make(chan *message.Message),
-	consumers: make(map[string]chan *message.Message)}}
+		sto:       sto,
+		producers: make(chan *message.Message),
+		consumers: make(map[string]chan *message.Message)}
+}
 
 type Bucket struct {
-	sto storage.Storage
+	sto       storage.Storage
 	producers chan *message.Message
-	addr string
-	workId int
+	addr      string
+	workId    int
 
 	consumers map[string]chan *message.Message
 
 	sequence int64
 
 	sequenceLock sync.Mutex
-
 }
 
-func (b *Bucket) RequestConnect(ctx context.Context, conn *message.Connect) (*message.Connect, error) {
+func (b *Bucket) RequestConnect(ctx context.Context, conn *connect.Connection) (*connect.Connection, error) {
 	//b.producers [conn.GetClientId()] = make(chan *message.Message)
 	conn.Oauth = true
 	conn.Token = utils.NewToken()
-
-	return conn,nil
+	return conn, nil
 }
 
 func (b *Bucket) AsyncSend(server message.MessageStream_AsyncSendServer) error {
@@ -47,26 +47,27 @@ func (b *Bucket) AsyncSend(server message.MessageStream_AsyncSendServer) error {
 
 func (b *Bucket) SyncSend(ctx context.Context, m *message.Message) (*message.RespSend, error) {
 
-		b.sequenceLock.Lock()
-		b.sequence++
-		b.sequenceLock.Unlock()
-		m.Sequence = b.sequence
-		m.TimesTamp = time.Now().UnixNano()
-		//b.consumers[m.GetTopic()]<-m
-		b.producers<-m
-		return &message.RespSend{
-			Sequence:  b.sequence,
-			IsConsume: true,
-		},nil
+	b.sequenceLock.Lock()
+	b.sequence++
+	b.sequenceLock.Unlock()
+
+	m.Sequence = b.sequence
+	m.TimesTamp = time.Now().UnixNano()
+	//b.consumers[m.GetTopic()]<-m
+	b.producers <- m
+	return &message.RespSend{
+		Sequence:  b.sequence,
+		IsConsume: true,
+	}, nil
 }
 
-func (b *Bucket) producerChannel(workId int){
+func (b *Bucket) producerChannel(workId int) {
 
-	log.Println("工作通道已开启,workId=",workId)
-	for  {
+	log.Println("工作通道已开启,workId=", workId)
+	for {
 		select {
-		case msg:=<-b.producers:
-			log.Println("通道",workId,"-------- ")
+		case msg := <-b.producers:
+			log.Println("通道", workId, "-------- ")
 			log.Println(msg.GetTopic())
 			log.Println(msg.GetKey())
 			log.Println(msg.GetSequence())
@@ -75,14 +76,14 @@ func (b *Bucket) producerChannel(workId int){
 	}
 }
 
-func (b*Bucket)start()error{
+func (b *Bucket) start() error {
 	ln, err := net.Listen("tcp", b.addr)
 	if err != nil {
 		fmt.Println("网络异常", err)
 		return err
 	}
 	s := grpc.NewServer()
-	message.RegisterMessageStreamServer(s,b)
+	message.RegisterMessageStreamServer(s, b)
 	go b.producerChannel(b.workId)
 	log.Println("Listen ", b.addr)
 
@@ -94,7 +95,7 @@ func (b*Bucket)start()error{
 
 	return nil
 }
-func (b*Bucket)Serve(addr string){
+func (b *Bucket) Serve(addr string) {
 	b.addr = addr
 	err := b.start()
 	if err != nil {

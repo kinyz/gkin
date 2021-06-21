@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "./;pb";
+
+
+
+message Connection{
+  string  ClientId =1;
+  bool    Oauth=2;
+  string  Token=3;
+  string  Key=4;
+
+}

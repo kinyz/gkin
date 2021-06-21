@@ -1,6 +1,7 @@
 
 syntax = "proto3";
 
+import "connect.proto";
 package pb;
 option go_package = "./;pb";
 
@@ -10,7 +11,7 @@ service MessageStream{
 //  rpc SendChannel(stream Message)returns(Resp);
   rpc AsyncSend(stream Message)returns(RespSend);
   rpc SyncSend(Message)returns(RespSend);
-  rpc RequestConnect(Connect)returns(Connect);
+  rpc RequestConnect(Connection)returns(Connection);
 }
 
 message MessageList{
@@ -33,9 +34,3 @@ message RespSend{
   bool  IsConsume=2;//是否消费
 }
 
-message Connect{
-  string  ClientId =1;
-  bool Oauth=2;
-  string Token=3;
-  string Key=4;
-}
