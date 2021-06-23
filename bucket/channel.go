@@ -51,3 +51,6 @@ func (cc *consumerChannel) send(topic string, msg *message.Message) error {
 	}
 	return c.Send(msg)
 }
+
+type producerChannel struct {
+}

@@ -37,6 +37,7 @@ func (b *Bucket) RequestConnect(ctx context.Context, conn *connect.Connection) (
 	//b.producers [conn.GetClientId()] = make(channel *message.Message)
 	conn.Oauth = true
 	conn.Token = utils.NewToken()
+	log.Println("用户连入")
 	return conn, nil
 }
 
@@ -90,6 +91,7 @@ func (b *Bucket) preHandleConsumerChan(topic string) error {
 	if err != nil {
 		return err
 	}
+	log.Println("开始监听")
 	for {
 		select {
 		case msg := <-ch:
@@ -115,6 +117,9 @@ func (b *Bucket) start() error {
 	s := grpc.NewServer()
 	message.RegisterMessageStreamServer(s, b)
 	go b.producerChannel(b.workId)
+
+	go b.preHandleConsumerChan("user")
+
 	log.Println("Listen ", b.addr)
 	err = s.Serve(ln)
 	if err != nil {

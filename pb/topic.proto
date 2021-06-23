@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package topic;
+option go_package = "./;pb";
+
+
+message Topic{
+  string Name =1;
+  map<string,TopicGroup> Groups=2;
+  int64 MessageLen =3; //消息数量
+  int64 LastSequence=4;//最新的序列号
+}
+
+message TopicGroup{
+  string Name =1;
+  map<string,string>Followers=2;
+}
+
+message TopicList{
+  map<string,Topic> List =1;
+}
