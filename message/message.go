@@ -2,6 +2,7 @@ package message
 
 import (
 	"encoding/json"
+
 	"google.golang.org/protobuf/proto"
 )
 

@@ -13,19 +13,15 @@ var Pool = sync.Pool{New: func() interface{} {
 		TimesTamp: 0,
 		IsConsume: false,
 		IsWrite:   false,
-		Producer: "",
-
+		Producer:  "",
 	}
 }}
 
-
-func New()*Message {
-	m:=Pool.Get().(*Message)
-	m.Headers =  make(map[string]string)
+func New() *Message {
+	m := Pool.Get().(*Message)
+	m.Headers = make(map[string]string)
 	m.IsConsume = false
 	m.IsWrite = false
 	m.Producer = ""
 	return m
 }
-
-

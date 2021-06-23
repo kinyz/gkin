@@ -2,22 +2,24 @@ package main
 
 import (
 	"context"
+	"gkin/connect"
 	"gkin/message"
+
 	"gkin/utils"
 	"google.golang.org/grpc"
 	"log"
 	"strconv"
 )
 
-func main(){
+func main() {
 
 	conn, err := getConn()
 	if err != nil {
 		return
 	}
 
-	c:=message.NewMessageStreamClient(conn)
-	connect, err := c.RequestConnect(context.Background(), &message.Connect{
+	c := message.NewMessageStreamClient(conn)
+	connection, err := c.RequestConnect(context.Background(), &connect.Connection{
 		ClientId: utils.NewUuid(),
 		Oauth:    false,
 		Token:    "",
@@ -27,30 +29,25 @@ func main(){
 		log.Println(err)
 		return
 	}
-	log.Println("验证成功",connect)
+	log.Println("验证成功", connection)
 
-	msg:=message.New()
+	msg := message.New()
 	msg.SetTopic("user")
 	msg.SetKey("im key")
-	for i:=0;i<10;i++ {
-		msg.SetValue([]byte("我是value"+strconv.Itoa(i)))
+	for i := 0; i < 10; i++ {
+		msg.SetValue([]byte("我是value" + strconv.Itoa(i)))
 		send, err := c.SyncSend(context.Background(), msg)
 		if err != nil {
-			log.Println("发送失败",err)
+			log.Println("发送失败", err)
 			continue
 		}
-		log.Println(" 发送结果",send)
+		log.Println(" 发送结果", send)
 
 	}
 
-
-	 conn.Close()
-
-
-
+	conn.Close()
 
 }
-
 
 func getConn() (*grpc.ClientConn, error) {
 	conn, err := grpc.Dial("127.0.0.1:17222", grpc.WithInsecure())

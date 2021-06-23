@@ -27,10 +27,8 @@ type Bucket struct {
 	addr      string
 	workId    int
 
-	consumers map[string]chan *message.Message
-
-	sequence int64
-
+	consumers    map[string]chan *message.Message
+	sequence     int64
 	sequenceLock sync.Mutex
 }
 
@@ -77,6 +75,9 @@ func (b *Bucket) producerChannel(workId int) {
 }
 
 func (b *Bucket) start() error {
+
+	b.sto.Initialization()
+
 	ln, err := net.Listen("tcp", b.addr)
 	if err != nil {
 		fmt.Println("网络异常", err)

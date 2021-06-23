@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 import "connect.proto";
-package pb;
+package message;
 option go_package = "./;pb";
 
 
@@ -11,7 +11,7 @@ service MessageStream{
 //  rpc SendChannel(stream Message)returns(Resp);
   rpc AsyncSend(stream Message)returns(RespSend);
   rpc SyncSend(Message)returns(RespSend);
-  rpc RequestConnect(Connection)returns(Connection);
+  rpc RequestConnect(connect.Connection)returns(connect.Connection);
 }
 
 message MessageList{
@@ -33,4 +33,5 @@ message RespSend{
   int64 Sequence=1; //序列号
   bool  IsConsume=2;//是否消费
 }
+
 

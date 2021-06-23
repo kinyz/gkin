@@ -3,6 +3,7 @@ module gkin
 go 1.16
 
 require (
+	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/satori/go.uuid v1.2.0
 	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
 	golang.org/x/sys v0.0.0-20210514084401-e8d321eab015 // indirect
