@@ -12,6 +12,11 @@ service MessageStream{
   rpc AsyncSend(stream Message)returns(RespSend);
   rpc SyncSend(Message)returns(RespSend);
   rpc RequestConnect(connect.Connection)returns(connect.Connection);
+  //rpc Listen
+}
+
+message RequestListenTopic{
+
 }
 
 message MessageList{
