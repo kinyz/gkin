@@ -2,6 +2,7 @@ package topic
 
 import (
 	"errors"
+	"log"
 	"sync"
 )
 
@@ -17,22 +18,22 @@ type Manage struct {
 }
 
 func (mgr *Manage) Add(topic string) (*Topic, error) {
-	mgr.lock.Lock()
-	defer mgr.lock.Unlock()
-	t, err := mgr.Get(topic)
-	if err == nil {
+	t, ok := mgr.List[topic]
+	if ok {
 		return t, errors.New(topic + "已存在")
 	}
 	to := New()
 	to.Name = topic
-	return to, nil
+	log.Println("新增topic", topic)
+	mgr.List[topic] = to
+	return mgr.List[topic], nil
 }
 func (mgr *Manage) Get(topic string) (*Topic, error) {
 	mgr.lock.RLock()
 	defer mgr.lock.RUnlock()
 	t, ok := mgr.List[topic]
 	if !ok {
-		return nil, errors.New(topic + "不存在")
+		return mgr.Add(topic)
 	}
 	return t, nil
 }
@@ -46,16 +47,18 @@ func (mgr *Manage) UpData(topic *Topic) error {
 	mgr.lock.Unlock()
 	return nil
 }
-func (mgr *Manage) AddSequence(topic string) error {
+func (mgr *Manage) AddSequence(topic string) (*Topic, error) {
 	_, err := mgr.Get(topic)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	log.Println("我是  ", mgr.List[topic])
 	mgr.lock.Lock()
+	defer mgr.lock.Unlock()
 	mgr.List[topic].LastSequence++
 	mgr.List[topic].MessageLen++
-	mgr.lock.Unlock()
-	return nil
+
+	return mgr.List[topic], nil
 }
 func (mgr *Manage) Remove(topic string) error {
 	t, err := mgr.Get(topic)

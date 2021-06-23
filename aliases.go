@@ -1,9 +1,9 @@
 package gkin
 
 import (
-	"gkin/pb"
+	"gkin/message"
 )
 
 type (
-	Message = pb.Message
+	Message = message.Message
 )

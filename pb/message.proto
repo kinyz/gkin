@@ -13,10 +13,13 @@ service MessageStream{
   rpc SyncSend(Message)returns(RespSend);
   rpc RequestConnect(connect.Connection)returns(connect.Connection);
   //rpc Listen
+  rpc WatchStream(RequestListenTopic)returns(stream Message);
+
 }
 
 message RequestListenTopic{
-
+    connect.Connection Conn =1;
+    map<string,string>TopicGroup =2;
 }
 
 message MessageList{

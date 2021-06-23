@@ -6,6 +6,7 @@ import (
 	"gkin/connect"
 	"gkin/message"
 	"gkin/storage"
+	"gkin/topic"
 	"gkin/utils"
 	"google.golang.org/grpc"
 	"log"
@@ -18,7 +19,8 @@ func NewBucket(sto storage.Storage) *Bucket {
 	return &Bucket{
 		sto:          sto,
 		producers:    make(chan *message.Message),
-		consumerChan: newConsumerChannel()}
+		consumerChan: newConsumerChannel(),
+		topicMgr:     topic.NewManager()}
 }
 
 type Bucket struct {
@@ -31,6 +33,8 @@ type Bucket struct {
 	sequence     int64
 	sequenceLock sync.Mutex
 	consumerChan *consumerChannel
+
+	topicMgr *topic.Manage
 }
 
 func (b *Bucket) RequestConnect(ctx context.Context, conn *connect.Connection) (*connect.Connection, error) {
@@ -47,14 +51,12 @@ func (b *Bucket) AsyncSend(server message.MessageStream_AsyncSendServer) error {
 
 func (b *Bucket) SyncSend(ctx context.Context, m *message.Message) (*message.RespSend, error) {
 
-	b.sequenceLock.Lock()
-	b.sequence++
-	b.sequenceLock.Unlock()
-
-	m.Sequence = b.sequence
+	t, err := b.topicMgr.AddSequence(m.Topic)
+	if err != nil {
+		return nil, err
+	}
+	m.Sequence = t.GetLastSequence()
 	m.TimesTamp = time.Now().UnixNano()
-	//b.consumers[m.GetTopic()]<-m
-
 	b.producers <- m
 	return &message.RespSend{
 		Sequence:  b.sequence,
