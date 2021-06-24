@@ -30,3 +30,15 @@ func GetMessage() *pb.Message {
 func PutMessage(msg *pb.Message) {
 	messagePool.Put(msg)
 }
+
+var messageResponsePool = sync.Pool{New: func() interface{} {
+	return &pb.ResponseMessage{}
+}}
+
+func GetMessageResponse() *pb.ResponseMessage {
+	return messageResponsePool.Get().(*pb.ResponseMessage)
+}
+
+func PutMessageResponse(msg *pb.ResponseMessage) {
+	messageResponsePool.Put(msg)
+}

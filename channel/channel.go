@@ -14,9 +14,9 @@ type Channel struct {
 	lock    sync.RWMutex
 }
 
-func NewChannel() *Channel {
+func NewChannel(cap int) *Channel {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &Channel{ctx: ctx, cancel: cancel, isClose: false, c: make(chan interface{})}
+	return &Channel{ctx: ctx, cancel: cancel, isClose: false, c: make(chan interface{}, cap)}
 }
 
 func (c *Channel) Close() {
@@ -48,4 +48,8 @@ func (c *Channel) Get() (chan interface{}, error) {
 		return nil, errors.New("通道已关闭")
 	}
 	return c.c, nil
+}
+
+func (c *Channel) Cap() int {
+	return cap(c.c)
 }

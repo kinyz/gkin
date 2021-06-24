@@ -6,14 +6,16 @@ option go_package = "./;pb";
 
 message Topic{
   string Name =1;
-  map<string,TopicGroup> Groups=2;
+  map<string,TopicGroup> Groups=2; //  组名 跟随者
   int64 MessageLen =3; //消息数量
   int64 LastSequence=4;//最新的序列号
+  map<int64,bool> Messages =5;
 }
 
+
+
 message TopicGroup{
-  string Name =1;
-  map<string,string>Followers=2;
+  map<string,string>Followers=1;
 }
 
 message TopicList{

@@ -40,8 +40,20 @@ func main() {
 		panic(err)
 
 	}
+
+	go func() {
+		for {
+			recv, err := cli.Recv()
+			if err != nil {
+				return
+			}
+
+			log.Println("服务器回调", recv)
+		}
+	}()
 	for i := 0; i < 10; i++ {
 		msg.SetValue([]byte("我是value" + strconv.Itoa(i)))
+		msg.Uuid = utils.NewUuid()
 		err := cli.Send(&pb.RequestSendStream{
 			Conn:    connection,
 			Message: msg,

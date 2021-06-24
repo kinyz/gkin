@@ -30,7 +30,7 @@ func (cc *consumerChannel) makeTopicChan(topic string) (*channel.Channel, error)
 	if ok {
 		return nil, errors.New("通道已存在")
 	}
-	cc.topicChan[topic] = channel.NewChannel()
+	cc.topicChan[topic] = channel.NewChannel(0)
 	return cc.topicChan[topic], nil
 }
 func (cc *consumerChannel) remove(topic string) {
