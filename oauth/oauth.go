@@ -1,9 +1,9 @@
 package oauth
 
 import (
-	"gkin/connect"
+	"gkin/pb"
 )
 
 type Oauth interface {
-	Connection(connect connect.Connect) error
+	Connection(connect pb.Connect) error
 }

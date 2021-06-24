@@ -3,7 +3,7 @@ package bucket
 import (
 	"errors"
 	"gkin/channel"
-	"gkin/message"
+	"gkin/pb"
 	"sync"
 )
 
@@ -44,7 +44,7 @@ func (cc *consumerChannel) remove(topic string) {
 	cc.lock.Unlock()
 }
 
-func (cc *consumerChannel) send(topic string, msg *message.Message) error {
+func (cc *consumerChannel) send(topic string, msg *pb.Message) error {
 	c, err := cc.getChan(topic)
 	if err != nil {
 		return err

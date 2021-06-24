@@ -1,14 +1,9 @@
-package message
+package pb
 
 import (
 	"encoding/json"
-
 	"google.golang.org/protobuf/proto"
 )
-
-func (x *Message) Put() {
-	Pool.Put(x)
-}
 
 func (x *Message) SetKey(key string) {
 	x.Key = key

@@ -1,22 +1,22 @@
 package connect
 
 import (
+	"gkin/pb"
 	"sync"
 )
 
 var Pool = sync.Pool{New: func() interface{} {
-	return &Connection{
+	return &pb.Connection{
 		ClientId: "",
-		Oauth:    false,
-		Token:    "",
-		Key:      "",
+
+		Token: "",
+		Key:   "",
 	}
 }}
 
-func New() Connect {
-	c := Pool.Get().(*Connection)
+func New() *pb.Connection {
+	c := Pool.Get().(*pb.Connection)
 
-	c.Oauth = false
 	c.ClientId = ""
 	c.Token = ""
 	c.Key = ""

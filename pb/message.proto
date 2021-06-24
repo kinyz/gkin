@@ -1,26 +1,12 @@
 
 syntax = "proto3";
 
-import "connect.proto";
-package message;
+
+package pb;
 option go_package = "./;pb";
 
 
-service MessageStream{
-//  rpc StreamChannel(stream Message)returns(stream Message);
-//  rpc SendChannel(stream Message)returns(Resp);
-  rpc AsyncSend(stream Message)returns(RespSend);
-  rpc SyncSend(Message)returns(RespSend);
-  rpc RequestConnect(connect.Connection)returns(connect.Connection);
-  //rpc Listen
-  rpc WatchStream(RequestListenTopic)returns(stream Message);
 
-}
-
-message RequestListenTopic{
-    connect.Connection Conn =1;
-    map<string,string>TopicGroup =2;
-}
 
 message MessageList{
   map<uint64,Message>List=1;
@@ -35,6 +21,7 @@ message Message {
   bool IsWrite=7; //是否写入硬盘
   string Producer=8; //生产者
   int64 Sequence=9; //序列号
+  string Uuid=10;//消息编号
 }
 
 message RespSend{

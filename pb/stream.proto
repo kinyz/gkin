@@ -1,0 +1,32 @@
+
+syntax = "proto3";
+import "message.proto";
+import "connect.proto";
+
+package pb;
+option go_package = "./;pb";
+
+
+
+
+service Stream{
+
+  rpc RequestConnect(Connection)returns(Connection);
+
+  rpc WatchStream(RequestListenTopic)returns(stream Message);
+  rpc SendStream(stream RequestSendStream)returns(stream Message);
+}
+
+
+message RequestListenTopic{
+  Connection Conn =1;
+  map<string,string>TopicGroup =2;
+}
+message RequestSendStream{
+  Connection Conn =1;
+  Message Message=2;
+}
+message ResponseMessage{
+  string Uuid =1; //消息编号
+  bool Result=2; //返回结果
+}

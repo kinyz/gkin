@@ -2,7 +2,8 @@ package storage
 
 import (
 	"github.com/golang/protobuf/proto"
-	"gkin/message"
+	"gkin/pb"
+	"gkin/pool"
 	"io/ioutil"
 	"log"
 	"os"
@@ -40,12 +41,12 @@ func (l *LocalStorage) Len(topic string) (int, error) {
 	return k, nil
 }
 
-func (l *LocalStorage) Get(topic string, sequence int64) (*message.Message, error) {
+func (l *LocalStorage) Get(topic string, sequence int64) (*pb.Message, error) {
 	data, err := ioutil.ReadFile(l.localPath + "/" + topic + "/" + strconv.FormatInt(sequence, 10))
 	if err != nil {
 		return nil, err
 	}
-	msg := message.New()
+	msg := pool.GetMessage()
 	err = proto.UnmarshalMerge(data, msg)
 	if err != nil {
 		return nil, err
@@ -54,7 +55,7 @@ func (l *LocalStorage) Get(topic string, sequence int64) (*message.Message, erro
 
 }
 
-func (l *LocalStorage) Write(msg *message.Message) error {
+func (l *LocalStorage) Write(msg *pb.Message) error {
 
 	msg.IsWrite = true
 	data, err := proto.Marshal(msg)

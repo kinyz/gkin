@@ -1,11 +1,12 @@
-package message
+package pool
 
 import (
+	"gkin/pb"
 	"sync"
 )
 
-var Pool = sync.Pool{New: func() interface{} {
-	return &Message{
+var messagePool = sync.Pool{New: func() interface{} {
+	return &pb.Message{
 		Topic:     "",
 		Headers:   make(map[string]string),
 		Key:       "",
@@ -17,11 +18,15 @@ var Pool = sync.Pool{New: func() interface{} {
 	}
 }}
 
-func New() *Message {
-	m := Pool.Get().(*Message)
+func GetMessage() *pb.Message {
+	m := messagePool.Get().(*pb.Message)
 	m.Headers = make(map[string]string)
 	m.IsConsume = false
 	m.IsWrite = false
 	m.Producer = ""
 	return m
+}
+
+func PutMessage(msg *pb.Message) {
+	messagePool.Put(msg)
 }

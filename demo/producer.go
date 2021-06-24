@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	"gkin/connect"
-	"gkin/message"
+	"gkin/pb"
+	"gkin/pool"
+	"time"
 
 	"gkin/utils"
 	"google.golang.org/grpc"
@@ -18,12 +19,12 @@ func main() {
 		return
 	}
 
-	c := message.NewMessageStreamClient(conn)
-	connection, err := c.RequestConnect(context.Background(), &connect.Connection{
+	c := pb.NewStreamClient(conn)
+	connection, err := c.RequestConnect(context.Background(), &pb.Connection{
 		ClientId: utils.NewUuid(),
-		Oauth:    false,
-		Token:    "",
-		Key:      "",
+
+		Token: "",
+		Key:   "dwigoqhdoiq(U)(J()_",
 	})
 	if err != nil {
 		log.Println(err)
@@ -31,17 +32,27 @@ func main() {
 	}
 	log.Println("验证成功", connection)
 
-	msg := message.New()
+	msg := pool.GetMessage()
 	msg.SetTopic("user")
 	msg.SetKey("im key")
+	cli, err := c.SendStream(context.Background())
+	if err != nil {
+		panic(err)
+
+	}
 	for i := 0; i < 10; i++ {
 		msg.SetValue([]byte("我是value" + strconv.Itoa(i)))
-		send, err := c.SyncSend(context.Background(), msg)
+		err := cli.Send(&pb.RequestSendStream{
+			Conn:    connection,
+			Message: msg,
+		})
 		if err != nil {
-			log.Println("发送失败", err)
+			log.Println(err)
 			continue
 		}
-		log.Println(" 发送结果", send)
+
+		log.Println(" 发送成功")
+		time.Sleep(1 * time.Second)
 
 	}
 

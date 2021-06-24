@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gkin/message"
+	"gkin/pool"
 	"gkin/storage"
 	"log"
 	"time"
@@ -11,7 +11,7 @@ func main() {
 	s := storage.NewLocalStorage()
 
 	s.Initialization()
-	msg := message.New()
+	msg := pool.New()
 
 	msg.SetTopic("myTopic2")
 	msg.SetTimesTamp(time.Now().UnixNano())
@@ -26,7 +26,7 @@ func main() {
 		}
 	}
 
-	message.Pool.Put(msg)
+	pool.Pool.Put(msg)
 
 	for i := 0; i < 5; i++ {
 		get, err := s.Get("myTopic2", int64(i))
@@ -34,7 +34,7 @@ func main() {
 			log.Println(err)
 			continue
 		}
-		message.Pool.Put(get)
+		pool.Pool.Put(get)
 		log.Println(get)
 		//get.Put()
 	}
