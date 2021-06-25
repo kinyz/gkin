@@ -3,21 +3,34 @@ package main
 import (
 	"gkin"
 	"log"
+	"time"
 )
 
 func main() {
 
-	cli := gkin.NewConsumer("1.116.248.126:17222", "123")
+	cli := gkin.NewConsumer("127.0.0.1:17222", "123")
 
-	go cli.Watch("user", "eee", test)
+	t := &Test{}
+	go cli.Watch("user", "eee", t.test)
 	go cli.Watches([]string{"user", "ddddd"}, "eee1", test2)
 
 	select {}
 }
 
-func test(message gkin.Message) {
+type Test struct {
+	start int64
+	b     bool
+}
 
+func (t *Test) test(message gkin.Message) {
+	if !t.b {
+		t.b = true
+		t.start = time.Now().UnixNano()
+	}
 	log.Println("test1", message)
+	if message.GetSequence() == 100000 {
+		log.Println("共耗时:", time.Now().UnixNano()-t.start)
+	}
 }
 
 func test2(message gkin.Message) {

@@ -5,19 +5,18 @@ import (
 	"gkin/utils"
 	"log"
 	"strconv"
-	"time"
 )
 
 func main() {
 
-	p, err := gkin.NewProducer("1.116.248.126:17222", utils.NewUuid(), "123")
+	p, err := gkin.NewProducer("127.0.0.1:17222", utils.NewUuid(), "123")
 	//p, err := producer.NewProducer("127.0.0.1:17222", utils.NewUuid(), bucket.StreamKey)
 	if err != nil {
 		panic(err)
 	}
 
-	for i := 0; i < 10; i++ {
-		time.Sleep(1 * time.Second)
+	for i := 0; i < 100000; i++ {
+		//time.Sleep(1 * time.Second)
 		err := p.ASyncSend("user", "im key", []byte("我是value"+strconv.Itoa(i)))
 		if err != nil {
 			log.Println(err)

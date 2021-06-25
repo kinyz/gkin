@@ -112,9 +112,11 @@ func (c *consumer) preHandleRecv(ch chan *pb.Message, f func(message *pb.Message
 		case msg := <-ch:
 			f(msg)
 		case <-ctx.Done():
-			break
+			//log.Println("关闭通道")
+			return
 		}
 	}
+
 }
 
 func (c *consumer) watch(topic map[string]string, ch chan *pb.Message, cli pb.StreamClient, head *pb.Connection) error {
