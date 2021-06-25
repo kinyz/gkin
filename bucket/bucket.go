@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-func NewBucket(sto storage.Storage) *Bucket {
+func NewBucket(key string, sto storage.Storage) *Bucket {
 	return &Bucket{
 		sto:             sto,
 		consumerChan:    make(chan *pb.Message),
@@ -24,6 +24,7 @@ func NewBucket(sto storage.Storage) *Bucket {
 		connMgr:         newConnectManager(),
 		storageChan:     make(chan *pb.Message),
 		topicMessageNum: make(map[string]int64),
+		key:             key,
 	}
 }
 
@@ -45,12 +46,14 @@ type Bucket struct {
 	storageChan chan *pb.Message
 
 	topicMessageNum map[string]int64
+
+	key string
 }
 
-const StreamKey = "dwigoqhdoiq(U)(J()_"
+//const StreamKey = "dwigoqhdoiq(U)(J()_"
 
 func (b *Bucket) RequestConnect(ctx context.Context, conn *pb.Connection) (*pb.Connection, error) {
-	if conn.GetKey() != StreamKey {
+	if conn.GetKey() != b.key {
 		return nil, errors.New("验证key错误")
 	}
 	conn.Token = utils.NewToken()
@@ -217,7 +220,7 @@ func (b *Bucket) sendWatch(list *pb.TopicGroup, msg *pb.Message) error {
 		if err != nil {
 			continue
 		}
-		return nil
+
 	}
 	//log.Println("发送消费消息",msg.GetSequence())
 
@@ -262,11 +265,11 @@ func (b *Bucket) storageChannel(workId int) {
 	for {
 		select {
 		case msg := <-b.storageChan:
+
 			log.Println(workId, "收到存储消息", msg.GetSequence())
 			b.consumerChan <- msg
-
+			b.saveMessage(msg)
 		}
-
 	}
 }
 func (b *Bucket) saveMessage(msg *pb.Message) (*pb.Message, error) {

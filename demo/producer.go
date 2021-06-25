@@ -2,7 +2,6 @@ package main
 
 import (
 	"gkin"
-	"gkin/bucket"
 	"gkin/utils"
 	"log"
 	"strconv"
@@ -11,7 +10,7 @@ import (
 
 func main() {
 
-	p, err := gkin.NewProducer("127.0.0.1:17222", utils.NewUuid(), bucket.StreamKey)
+	p, err := gkin.NewProducer("1.116.248.126:17222", utils.NewUuid(), "123")
 	//p, err := producer.NewProducer("127.0.0.1:17222", utils.NewUuid(), bucket.StreamKey)
 	if err != nil {
 		panic(err)

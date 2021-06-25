@@ -2,8 +2,7 @@ package main
 
 import (
 	"flag"
-	"gkin/bucket"
-	"gkin/storage"
+	"gkin"
 )
 
 func main() {
@@ -13,7 +12,7 @@ func main() {
 	flag.StringVar(&port, "port", "17222", "-port port")
 	flag.Parse()
 
-	b := bucket.NewBucket(storage.NewLocalStorage())
+	b := gkin.NewBucket("123", gkin.LocalStorage())
 
 	b.Serve(addr + ":" + port)
 }
