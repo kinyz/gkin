@@ -10,7 +10,7 @@ func main() {
 	cli := gkin.NewConsumer("1.116.248.126:17222", "123")
 
 	go cli.Watch("user", "eee", test)
-	go cli.Watch("user", "eee", test2)
+	go cli.Watches([]string{"user", "ddddd"}, "eee1", test2)
 
 	select {}
 }

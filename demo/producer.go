@@ -15,6 +15,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	for i := 0; i < 10; i++ {
 		time.Sleep(1 * time.Second)
 		err := p.ASyncSend("user", "im key", []byte("我是value"+strconv.Itoa(i)))
