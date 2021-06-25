@@ -1,4 +1,4 @@
-module gkin
+module github.com/kinyz/gkin
 
 go 1.16
 

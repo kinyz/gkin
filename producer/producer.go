@@ -3,9 +3,9 @@ package producer
 import (
 	"context"
 	"errors"
-	"gkin/pb"
-	"gkin/pool"
-	"gkin/utils"
+	"github.com/kinyz/gkin/pb"
+	"github.com/kinyz/gkin/pool"
+	"github.com/kinyz/gkin/utils"
 	"google.golang.org/grpc"
 	"log"
 	"time"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gkin/kv"
+	"github.com/kinyz/gkin/kv"
 	"log"
 )
 

@@ -2,7 +2,7 @@ package bucket
 
 import (
 	"errors"
-	"gkin/pb"
+	"github.com/kinyz/gkin/pb"
 	"sync"
 )
 

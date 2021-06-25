@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../gkin/.idea/gkin.iml" filepath="$PROJECT_DIR$/../gkin/.idea/gkin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/github.com/kinyz/gkin.iml" filepath="$PROJECT_DIR$/.idea/github.com/kinyz/gkin.iml" />
     </modules>
   </component>
 </project>

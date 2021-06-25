@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gkin"
+	"github.com/kinyz/gkin"
 	"log"
 	"time"
 )

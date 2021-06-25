@@ -3,8 +3,8 @@ package consumer
 import (
 	"context"
 	"errors"
-	"gkin/pb"
-	"gkin/utils"
+	"github.com/kinyz/gkin/pb"
+	"github.com/kinyz/gkin/utils"
 	"google.golang.org/grpc"
 	"log"
 )

@@ -2,8 +2,8 @@ package storage
 
 import (
 	"github.com/golang/protobuf/proto"
-	"gkin/pb"
-	"gkin/pool"
+	"github.com/kinyz/gkin/pb"
+	"github.com/kinyz/gkin/pool"
 	"io/ioutil"
 	"log"
 	"os"

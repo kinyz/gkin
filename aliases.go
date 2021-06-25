@@ -1,11 +1,11 @@
 package gkin
 
 import (
-	"gkin/bucket"
-	"gkin/consumer"
-	"gkin/pb"
-	"gkin/producer"
-	"gkin/storage"
+	"github.com/kinyz/gkin/bucket"
+	"github.com/kinyz/gkin/consumer"
+	"github.com/kinyz/gkin/pb"
+	"github.com/kinyz/gkin/producer"
+	"github.com/kinyz/gkin/storage"
 )
 
 type (

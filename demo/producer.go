@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/kinyz/gkin/utils"
 	"gkin"
-	"gkin/utils"
 	"log"
 	"strconv"
 )

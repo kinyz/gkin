@@ -1,7 +1,7 @@
 package pool
 
 import (
-	"gkin/pb"
+	"github.com/kinyz/gkin/pb"
 	"sync"
 )
 

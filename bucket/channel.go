@@ -2,8 +2,8 @@ package bucket
 
 import (
 	"errors"
-	"gkin/channel"
-	"gkin/pb"
+	"github.com/kinyz/gkin/channel"
+	"github.com/kinyz/gkin/pb"
 	"sync"
 )
 

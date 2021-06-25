@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"gkin/pb"
+	"github.com/kinyz/gkin/pb"
 )
 
 type Storage interface {

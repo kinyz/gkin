@@ -2,8 +2,8 @@ package bucket
 
 import (
 	"errors"
-	"gkin/pb"
-	"gkin/pool"
+	"github.com/kinyz/gkin/pb"
+	"github.com/kinyz/gkin/pool"
 	"log"
 	"sync"
 	"sync/atomic"
