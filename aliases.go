@@ -1,9 +1,17 @@
 package gkin
 
 import (
-	"gkin/message"
+	"gkin/pb"
+	"gkin/producer"
 )
 
 type (
-	Message = message.Message
+	Message = *pb.Message
+
+	Producer = producer.Producer
 )
+
+func NewProducer(addr, clientId, key string) (Producer, error) {
+
+	return producer.NewProducer(addr, clientId, key)
+}

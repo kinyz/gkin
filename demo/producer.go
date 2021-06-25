@@ -1,82 +1,29 @@
 package main
 
 import (
-	"context"
-	"gkin/pb"
-	"gkin/pool"
-	"time"
-
+	"gkin"
+	"gkin/bucket"
 	"gkin/utils"
-	"google.golang.org/grpc"
 	"log"
 	"strconv"
+	"time"
 )
 
 func main() {
 
-	conn, err := getConn()
-	if err != nil {
-		return
-	}
-
-	c := pb.NewStreamClient(conn)
-	connection, err := c.RequestConnect(context.Background(), &pb.Connection{
-		ClientId: utils.NewUuid(),
-
-		Token: "",
-		Key:   "dwigoqhdoiq(U)(J()_",
-	})
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	log.Println("验证成功", connection)
-
-	msg := pool.GetMessage()
-	msg.SetTopic("user")
-	msg.SetKey("im key")
-	cli, err := c.SendStream(context.Background())
+	p, err := gkin.NewProducer("127.0.0.1:17222", utils.NewUuid(), bucket.StreamKey)
+	//p, err := producer.NewProducer("127.0.0.1:17222", utils.NewUuid(), bucket.StreamKey)
 	if err != nil {
 		panic(err)
-
 	}
-
-	go func() {
-		for {
-			recv, err := cli.Recv()
-			if err != nil {
-				return
-			}
-
-			log.Println("服务器回调", recv)
-		}
-	}()
 	for i := 0; i < 10; i++ {
-		msg.SetValue([]byte("我是value" + strconv.Itoa(i)))
-		msg.Uuid = utils.NewUuid()
-		err := cli.Send(&pb.RequestSendStream{
-			Conn:    connection,
-			Message: msg,
-		})
+		time.Sleep(1 * time.Second)
+		err := p.ASyncSend("user", "im key", []byte("我是value"+strconv.Itoa(i)))
 		if err != nil {
 			log.Println(err)
-			continue
 		}
-
-		log.Println(" 发送成功")
-		time.Sleep(1 * time.Second)
-
+		log.Println("发送第", i)
 	}
+	select {}
 
-	conn.Close()
-
-}
-
-func getConn() (*grpc.ClientConn, error) {
-	conn, err := grpc.Dial("127.0.0.1:17222", grpc.WithInsecure())
-	if err != nil {
-		log.Println("连接服务器失败", err)
-		return nil, err
-	}
-	return conn, nil
 }

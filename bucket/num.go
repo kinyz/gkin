@@ -1,21 +1,21 @@
 package bucket
 
+import "sync/atomic"
+
 func (b *Bucket) addConnNum() {
-	b.connLock.Lock()
-	b.nowConnNum++
-	b.connLock.Unlock()
+
+	atomic.AddInt64(&b.nowConnNum, 1)
+	//b.connLock.Lock()
+	//b.nowConnNum++
+	//b.connLock.Unlock()
 }
 func (b *Bucket) reduceConnNum() {
-	b.connLock.Lock()
-	b.nowConnNum--
-	b.connLock.Unlock()
+	atomic.AddInt64(&b.nowConnNum, -1)
 }
-func (b *Bucket) getConnNum() int {
-	b.connLock.RLock()
-	defer b.connLock.RUnlock()
+func (b *Bucket) getConnNum() int64 {
 	return b.nowConnNum
 }
 
-func (b *Bucket) getConnMaxNum() int {
+func (b *Bucket) getConnMaxNum() int64 {
 	return b.maxConnNum
 }

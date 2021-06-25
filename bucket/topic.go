@@ -6,6 +6,7 @@ import (
 	"gkin/pool"
 	"log"
 	"sync"
+	"sync/atomic"
 )
 
 func newTopicManager() *topicManage {
@@ -55,10 +56,8 @@ func (mgr *topicManage) AddSequence(topic string) (*pb.Topic, error) {
 		return nil, err
 	}
 	//log.Println("我是  ", mgr.List[topic])
-	mgr.lock.Lock()
-	defer mgr.lock.Unlock()
-	mgr.List[topic].LastSequence++
-	mgr.List[topic].MessageLen++
+	atomic.AddInt64(&mgr.List[topic].LastSequence, 1)
+	atomic.AddInt64(&mgr.List[topic].MessageLen, 1)
 	return mgr.List[topic], nil
 }
 func (mgr *topicManage) Remove(topic string) error {

@@ -14,7 +14,7 @@ service Stream{
   rpc RequestConnect(Connection)returns(Connection);
 
   rpc WatchStream(RequestListenTopic)returns(stream Message);
-  rpc SendStream(stream RequestSendStream)returns(stream ResponseMessage);
+  rpc SendStream(stream Message)returns(stream ResponseMessage);
 }
 
 
@@ -24,7 +24,7 @@ message RequestListenTopic{
 }
 message RequestSendStream{
   Connection Conn =1;
-  Message Message=2;
+  //Message Message=2;
 }
 message ResponseMessage{
   string  Uuid =1; //消息编号
