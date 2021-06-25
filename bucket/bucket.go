@@ -134,6 +134,14 @@ func (b *Bucket) SendStream(conn pb.Stream_SendStreamServer) error {
 		//	break
 		//}
 		b.storageChan <- recv
+
+		if recv.GetResult() {
+			conn.Send(&pb.ResponseMessage{
+				Uuid:     recv.GetUuid(),
+				Sequence: recv.GetSequence(),
+				Result:   true,
+			})
+		}
 		//select {
 		//case b.consumerChan<-recv:
 		//	//log.Println("收到消息", recv)

@@ -45,13 +45,13 @@ type producer struct {
 	addr    string
 }
 
-func (p *producer) send(uuid, topic, key string, value []byte, headers ...map[string]string) error {
+func (p *producer) send(uuid, topic, key string, value []byte, result bool, headers ...map[string]string) error {
 	msg := pool.GetMessage()
-
 	msg.Uuid = uuid
 	msg.SetKey(key)
 	msg.SetValue(value)
 	msg.SetTopic(topic)
+	msg.Result = result
 	if len(headers) > 0 {
 		msg.SetHeaders(headers[0])
 	}
@@ -68,7 +68,7 @@ func (p *producer) send(uuid, topic, key string, value []byte, headers ...map[st
 func (p *producer) SyncSend(topic, key string, value []byte, headers ...map[string]string) (bool, error) {
 	uuid := utils.NewUuid()
 	p.syncMap[uuid] = make(chan bool)
-	if err := p.send(uuid, topic, key, value, headers...); err != nil {
+	if err := p.send(uuid, topic, key, value, true, headers...); err != nil {
 		close(p.syncMap[uuid])
 		delete(p.syncMap, uuid)
 		return false, err
@@ -88,7 +88,7 @@ func (p *producer) SyncSend(topic, key string, value []byte, headers ...map[stri
 
 // ASyncSend 异步发送
 func (p *producer) ASyncSend(topic, key string, value []byte, headers ...map[string]string) error {
-	return p.send(utils.NewUuid(), topic, key, value, headers...)
+	return p.send(utils.NewUuid(), topic, key, value, false, headers...)
 }
 func (p *producer) responseChannel() {
 	for {

@@ -22,6 +22,7 @@ message Message {
   string Producer=8; //生产者
   int64 Sequence=9; //序列号
   string Uuid=10;//消息编号
+  bool Result=11;//是否需要回调
 }
 
 message RespSend{
