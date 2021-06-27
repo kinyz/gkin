@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"gkin"
+	"github.com/kinyz/gkin"
 )
 
 func main() {
